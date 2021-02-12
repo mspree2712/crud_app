@@ -65,6 +65,7 @@ public class PersonDAO {
                 // object.
                 person.setId(rs.getInt("id"));
                 person.setFirst(rs.getString("first"));
+                person.setLast(rs.getString("last"));
                 person.setEmail(rs.getString("email"));
                 person.setPhone(rs.getString("phone"));
                 person.setBirthday(rs.getString("birthday"));
