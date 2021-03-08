@@ -37,6 +37,9 @@
                 <a class="nav-link" href="name_list.html">Name List
                     <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="form_demo.html">Form Demo <span class="sr-only">(current)</span></a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -73,35 +76,49 @@
 </div>
 
 <!-- This is a hidden "pop up" window that we'll use to enter new data -->
-<div class="modal fade" id="myModal">
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
+                <!-- Window Title -->
+                <h4 class="modal-title">Update Name List</h4>
                 <!-- Close button -->
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <!-- Window Title -->
-                <h4 class="modal-title">Update Name List</h4>
             </div>
             <div class="modal-body">
                 <!-- Form -->
                 <form id="my-form" name="my-form">
                     <div class="form-group">
-                        <label for="firstName">First Name:</label>
                         <input type="hidden" id="id" name="id" class="form-control"><br>
+
+                        <label for="firstName">First Name:</label>
                         <input type="text" id="firstName" name="firstName" class="form-control"
                                placeholder="First name"><br>
+
+                        <label for="lastName"></label>
                         <input type="text" id="lastName" name="lastName" class="form-control"
                                placeholder="Last name"><br>
+
+                        <label for="email"></label>
                         <input type="email" id="email" name="email" class="form-control"
                                placeholder="Email address"><br>
+
+                        <label for="phoneNumber"></label>
+                        <input type="text" id="phoneNumber" name="phoneNumber" class="form-control"
+                               placeholder="Phone number"><br>
+
+                        <label for="birthday"></label>
+                        <input type="date" id="birthday" name="birthday" class="form-control"
+                               placeholder="birthday"><br>
                     </div>
                 </form>
             </div>
+
             <!-- Footer where we put our save/close buttons -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id = "closeButton" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button id="saveChanges" type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div><!-- /.modal-content -->
