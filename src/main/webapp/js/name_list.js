@@ -33,18 +33,18 @@ function getJSDateFromSQLDate(sqlDate) {
 function updateTable() {
     let url = "api/name_list_get";
     $.getJSON(url, null, function(json_result) {
-        $('#datatable tr:last').remove()
+        $('#datatable tbody tr').remove();
         for (let i = 0; i < json_result.length; i++) {
 
             birthdayDate = getJSDateFromSQLDate(json_result[i].birthday);
             birthdayString = birthdayDate.toLocaleDateString();
 
-            $('#datatable tr:last').after('<tr><td>'
+            $('#datatable tbody').append('<tr><td>'
                 + json_result[i].id +
-                '</td><td>' + htmlSafe(json_result[i].first) + '</td>' + '<td>'
-                + htmlSafe(json_result[i].last) + '</td><td>'
-                + htmlSafe(json_result[i].email)
-                + '</td>' + '<td>' + htmlSafe(formatPhoneNumber(json_result[i].phone))
+                '</td><td>' + htmlSafe(json_result[i].firstName) + '</td>' + '<td>'
+                + htmlSafe(json_result[i].lastName) + '</td><td>'
+                + htmlSafe(json_result[i].emailAddress)
+                + '</td>' + '<td>' + htmlSafe(formatPhoneNumber(json_result[i].phoneNumber))
                 + '</td><td>'
                 + htmlSafe(birthdayString) + '</td></tr>');
         }
@@ -58,7 +58,7 @@ function showDialogAdd() {
     $('#id').val("");
     $('#firstName').val("");
     $('#lastName').val("");
-    $('#email').val("");
+    $('#emailAddress').val("");
     $('#phoneNumber').val("");
     $('#birthday').val("")
 
@@ -69,12 +69,14 @@ function showDialogAdd() {
 let addItemButton = $('#addItem');
 addItemButton.on("click", showDialogAdd);
 
+
 function saveChanges() {
     // Create the regular expression
     let reg = /^[A-Za-z]{1,10}$/;
     let emailReg = /^\S+@\S+$/;
     let phoneReg = /^[0-9()-]+$/;
     let dateReg = /^\d{4}-\d{2}-\d{2}$/;
+    let isValid = true;
 
     let firstName = $('#firstName').val();
     // Test the regular expression to see if there is a match
@@ -89,6 +91,7 @@ function saveChanges() {
         $('#firstName').removeClass("is-valid");
         $('#firstName').removeClass("is-invalid");
         $('#firstName').addClass("is-invalid");
+        isValid = false;
     }
 
     let lastName = $('#lastName').val();
@@ -104,6 +107,7 @@ function saveChanges() {
         $('#lastName').removeClass("is-valid");
         $('#lastName').removeClass("is-invalid");
         $('#lastName').addClass("is-invalid");
+        isValid = false;
     }
 
     let emailAddress = $('#email').val();
@@ -119,6 +123,7 @@ function saveChanges() {
         $('#email').removeClass("is-valid");
         $('#email').removeClass("is-invalid");
         $('#email').addClass("is-invalid");
+        isValid = false;
     }
 
     let phoneNumber = $('#phoneNumber').val();
@@ -134,6 +139,7 @@ function saveChanges() {
         $('#phoneNumber').removeClass("is-valid");
         $('#phoneNumber').removeClass("is-invalid");
         $('#phoneNumber').addClass("is-invalid");
+        isValid = false;
     }
 
     let birthday = $('#birthday').val();
@@ -149,8 +155,29 @@ function saveChanges() {
         $('#birthday').removeClass("is-valid");
         $('#birthday').removeClass("is-invalid");
         $('#birthday').addClass("is-invalid");
+        isValid = false;
     }
 
+    if (isValid) {
+        let url = "api/name_list_edit";
+        let dataToServer = {firstName: firstName,
+                            lastName: lastName,
+                            emailAddress: emailAddress,
+                            phoneNumber: phoneNumber,
+                            birthday: birthday};
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(dataToServer),
+            success: function (dataFromServer) {
+                console.log(dataFromServer);
+                updateTable();
+            },
+            contentType: "application/json",
+            dataType: 'text' // Could be JSON or whatever too
+        });
+    }
 }
 let saveChangesButton = $('#saveChanges');
 saveChangesButton.on("click", saveChanges);
@@ -160,8 +187,8 @@ function clearValidation() {
     $('#firstName').removeClass("is-valid");
     $('#lastName').removeClass("is-invalid");
     $('#lastName').removeClass("is-valid");
-    $('#email').removeClass("is-invalid");
-    $('#email').removeClass("is-valid");
+    $('#emailAddress').removeClass("is-invalid");
+    $('#emailAddress').removeClass("is-valid");
     $('#phoneNumber').removeClass("is-valid");
     $('#phoneNumber').removeClass("is-invalid");
     $('#birthday').removeClass("is-valid");

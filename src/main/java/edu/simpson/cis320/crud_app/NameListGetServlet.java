@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 @WebServlet(name = "NameListGetServlet", value = "/api/name_list_get")
 public class NameListGetServlet extends HttpServlet {
-    private final static Logger log = Logger.getLogger(PersonDAO.class.getName());
+    private final static Logger log = Logger.getLogger(NameListGetServlet.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
