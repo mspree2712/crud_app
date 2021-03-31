@@ -12,11 +12,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet(name = "NameListEdit", value = "/api/name_list_edit")
 
 public class NameListEdit extends HttpServlet {
     private final static Logger log = Logger.getLogger(FormTestJSONServlet.class.getName());
+
+    private Pattern nameValidationPattern;
+    private Pattern emailValidationPattern;
+    private Pattern phoneNumberValidationPattern;
+    private Pattern birthdayValidationPattern;
+
+    public NameListEdit(){
+        nameValidationPattern = Pattern.compile("^[A-Za-z]{1,10}$");
+        emailValidationPattern = Pattern.compile("^\\S+@\\S+$");
+        phoneNumberValidationPattern = Pattern.compile("^[0-9()-]+$");
+        birthdayValidationPattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -40,13 +54,47 @@ public class NameListEdit extends HttpServlet {
         Jsonb jsonb = JsonbBuilder.create();
         Person person = jsonb.fromJson(requestString, Person.class);
 
-        // Log info as a check
-        log.log(Level.INFO, "Object test: "+ person.getFirstName());
+        /*String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String emailAddress = request.getParameter("emailAddress");
+        String phoneNumber = request.getParameter("phoneNumber");
+        String birthday = request.getParameter("birthday");
 
-        // Send something back to the client. Really, we should send a JSON, but
-        // we'll keep things simple.
+        Matcher f = nameValidationPattern.matcher(firstName);
+        if (f.find( )){
+            out.println("success");
+        } else {
+            out.println("error");
+        }
+
+        Matcher l = nameValidationPattern.matcher(lastName);
+        if (l.find( )){
+            out.println("success");
+        } else {
+            out.println("error");
+        }
+
+        Matcher e = emailValidationPattern.matcher(emailAddress);
+        if (e.find( )){
+            out.println("success");
+        } else {
+            out.println("error");
+        }
+
+        Matcher p = phoneNumberValidationPattern.matcher(phoneNumber);
+        if (p.find( )){
+            out.println("success");
+        } else {
+            out.println("error");
+        }
+
+        Matcher b = nameValidationPattern.matcher(birthday);
+        if (b.find( )){
+            out.println("success");
+        } else {
+            out.println("error");
+        }*/
 
         PersonDAO.addPerson(person);
     }
-
 }

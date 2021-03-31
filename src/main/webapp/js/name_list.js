@@ -20,9 +20,9 @@ function formatPhoneNumber(phoneNumberString) {
     return phoneNumberString;
 }
 
-function getJSDateFromSQLDate(sqlDate) {
+function getJSDateFromSQLDate(date) {
     // Strip non-digits
-    let cleaned = sqlDate.replace(/\D/g, '');
+    let cleaned = date.replace(/\D/g, '');
     // Match and group
     let match = cleaned.match(/^(\d{4})(\d{2})(\d{2})$/);
     // Create a new Date object
@@ -35,24 +35,54 @@ function updateTable() {
     $.getJSON(url, null, function(json_result) {
         $('#datatable tbody tr').remove();
         for (let i = 0; i < json_result.length; i++) {
-
-            birthdayDate = getJSDateFromSQLDate(json_result[i].birthday);
-            birthdayString = birthdayDate.toLocaleDateString();
+            birthdayDate = "";
+            birthdayString = "";
+            if("birthday" in json_result[i]) {
+                birthdayDate = getJSDateFromSQLDate(json_result[i].birthday);
+                birthdayString = birthdayDate.toLocaleDateString();
+            }
 
             $('#datatable tbody').append('<tr><td>'
-                + json_result[i].id +
-                '</td><td>' + htmlSafe(json_result[i].firstName) + '</td>' + '<td>'
+                + json_result[i].id
+                + '</td><td>'
+                + htmlSafe(json_result[i].firstName) + '</td>' + '<td>'
                 + htmlSafe(json_result[i].lastName) + '</td><td>'
                 + htmlSafe(json_result[i].emailAddress)
                 + '</td>' + '<td>' + htmlSafe(formatPhoneNumber(json_result[i].phoneNumber))
                 + '</td><td>'
-                + htmlSafe(birthdayString) + '</td></tr>');
+                + htmlSafe(birthdayString)
+                + '</td><td>'
+                + '<button type=\'button\' name=\'delete\' class=\'deleteButton btn btn-danger\' value= \''+json_result[i].id +'\'>'
+                + 'Delete'
+                + '</button>'
+                + '</td></tr>'
+                );
         }
-        console.log("Done");
+        console.log("before");
+        $(".deleteButton").on("click", deleteItem);
+        console.log("after");
     });
 }
-
 updateTable();
+
+function deleteItem(e) {
+    console.log("Delete");
+    console.log(e.target.value);
+
+    let url = "api/name_list_delete";
+    let dataToServer = {id: e.target.value};
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(dataToServer),
+        success: function (dataFromServer) {
+            console.log(dataFromServer);
+            updateTable();
+        },
+        contentType: "application/json",
+        dataType: 'text' // Could be JSON or whatever too
+    })
+}
 
 function showDialogAdd() {
     $('#id').val("");
@@ -63,12 +93,13 @@ function showDialogAdd() {
     $('#birthday').val("")
 
     $('#myModal').modal('show');
+
+    $('#myModal').on('shown.bs.modal', function(){$('#firstName').focus()})
 }
 // There's a button in the form with the ID "addItem"
 // Associate the function showDialogAdd with it.
 let addItemButton = $('#addItem');
 addItemButton.on("click", showDialogAdd);
-
 
 function saveChanges() {
     // Create the regular expression
@@ -79,82 +110,87 @@ function saveChanges() {
     let isValid = true;
 
     let firstName = $('#firstName').val();
+    let firstField = $('#firstName');
     // Test the regular expression to see if there is a match
     if (reg.test(firstName)) {
         // Set style for outline of form field
         // This is a VALID field
-        $('#firstName').removeClass("is-invalid");
-        $('#firstName').removeClass("is-valid");
-        $('#firstName').addClass("is-valid");
+        firstField.removeClass("is-invalid");
+        firstField.removeClass("is-valid");
+        firstField.addClass("is-valid");
     } else {
         // This is an INVALID field
-        $('#firstName').removeClass("is-valid");
-        $('#firstName').removeClass("is-invalid");
-        $('#firstName').addClass("is-invalid");
+        firstField.removeClass("is-valid");
+        firstField.removeClass("is-invalid");
+        firstField.addClass("is-invalid");
         isValid = false;
     }
 
     let lastName = $('#lastName').val();
+    let secondField = $('#lastName');
     // Test the regular expression to see if there is a match
     if (reg.test(lastName)) {
         // Set style for outline of form field
         // This is a VALID field
-        $('#lastName').removeClass("is-invalid");
-        $('#lastName').removeClass("is-valid");
-        $('#lastName').addClass("is-valid");
+        secondField.removeClass("is-invalid");
+        secondField.removeClass("is-valid");
+        secondField.addClass("is-valid");
     } else {
         // This is an INVALID field
-        $('#lastName').removeClass("is-valid");
-        $('#lastName').removeClass("is-invalid");
-        $('#lastName').addClass("is-invalid");
+        secondField.removeClass("is-valid");
+        secondField.removeClass("is-invalid");
+        secondField.addClass("is-invalid");
         isValid = false;
     }
 
     let emailAddress = $('#email').val();
+    let thirdField = $('#email')
     // Test the regular expression to see if there is a match
     if (emailReg.test(emailAddress)) {
         // Set style for outline of form field
         // This is a VALID field
-        $('#email').removeClass("is-invalid");
-        $('#email').removeClass("is-valid");
-        $('#email').addClass("is-valid");
+        thirdField.removeClass("is-invalid");
+        thirdField.removeClass("is-valid");
+        thirdField.addClass("is-valid");
     } else {
         // This is an INVALID field
-        $('#email').removeClass("is-valid");
-        $('#email').removeClass("is-invalid");
-        $('#email').addClass("is-invalid");
+        thirdField.removeClass("is-valid");
+        thirdField.removeClass("is-invalid");
+        thirdField.addClass("is-invalid");
         isValid = false;
     }
 
     let phoneNumber = $('#phoneNumber').val();
+    let fourthField = $('#phoneNumber');
     // Test the regular expression to see if there is a match
     if (phoneReg.test(phoneNumber)) {
         // Set style for outline of form field
         // This is a VALID field
-        $('#phoneNumber').removeClass("is-invalid");
-        $('#phoneNumber').removeClass("is-valid");
-        $('#phoneNumber').addClass("is-valid");
+        fourthField.removeClass("is-invalid");
+        fourthField.removeClass("is-valid");
+        fourthField.addClass("is-valid");
     } else {
         // This is an INVALID field
-        $('#phoneNumber').removeClass("is-valid");
-        $('#phoneNumber').removeClass("is-invalid");
-        $('#phoneNumber').addClass("is-invalid");
+        fourthField.removeClass("is-valid");
+        fourthField.removeClass("is-invalid");
+        fourthField.addClass("is-invalid");
         isValid = false;
     }
 
     let birthday = $('#birthday').val();
+    let fifthField = $('#birthday');
     // Test the regular expression to see if there is a match
     if (dateReg.test(birthday)) {
         // Set style for outline of form field
         // This is a VALID field
-        $('#birthday').removeClass("is-invalid");
-        $('#birthday').removeClass("is-valid");
-        $('#birthday').addClass("is-valid");
+        fifthField.removeClass("is-invalid");
+        fifthField.removeClass("is-valid");
+        fifthField.addClass("is-valid");
     } else {
         // This is an INVALID field
-        $('#birthday').removeClass("is-valid");
-        $('#birthday').removeClass("is-invalid");
-        $('#birthday').addClass("is-invalid");
+        fifthField.removeClass("is-valid");
+        fifthField.removeClass("is-invalid");
+        fifthField.addClass("is-invalid");
         isValid = false;
     }
 
@@ -173,6 +209,7 @@ function saveChanges() {
             success: function (dataFromServer) {
                 console.log(dataFromServer);
                 updateTable();
+                $('#myModal').modal('hide');
             },
             contentType: "application/json",
             dataType: 'text' // Could be JSON or whatever too
@@ -183,17 +220,30 @@ let saveChangesButton = $('#saveChanges');
 saveChangesButton.on("click", saveChanges);
 
 function clearValidation() {
-    $('#firstName').removeClass("is-invalid");
-    $('#firstName').removeClass("is-valid");
-    $('#lastName').removeClass("is-invalid");
-    $('#lastName').removeClass("is-valid");
-    $('#emailAddress').removeClass("is-invalid");
-    $('#emailAddress').removeClass("is-valid");
-    $('#phoneNumber').removeClass("is-valid");
-    $('#phoneNumber').removeClass("is-invalid");
-    $('#birthday').removeClass("is-valid");
-    $('#birthday').removeClass("is-invalid");
+    let firstField = $('#firstName');
+    let secondField = $('#lastName');
+    let thirdField = $('#email');
+    let fourthField = $('#phoneNumber');
+    let fifthField = $('#birthday');
+    firstField.removeClass("is-invalid");
+    firstField.removeClass("is-valid");
+    secondField.removeClass("is-invalid");
+    secondField.removeClass("is-valid");
+    thirdField.removeClass("is-invalid");
+    thirdField.removeClass("is-valid");
+    fourthField.removeClass("is-valid");
+    fourthField.removeClass("is-invalid");
+    fifthField.removeClass("is-valid");
+    fifthField.removeClass("is-invalid");
 }
 
 let closeButton = $('#closeButton');
 closeButton.on("click", clearValidation);
+
+$(document).keydown(function(e) {
+    console.log(e.keyCode);
+    if(e.keyCode == 65 && !$('#myModal').is(':visible')){
+        showDialogAdd();
+    }
+})
+
