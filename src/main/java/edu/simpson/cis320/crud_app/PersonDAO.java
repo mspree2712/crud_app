@@ -192,7 +192,60 @@ public class PersonDAO {
             log.log(Level.SEVERE, "Error", e);
         }
     }
+    public static void editPerson(Person person) {
+        log.log(Level.INFO, "Edit person");
+        // Declare our variables
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        // Databases are unreliable. Use some exception handling
+        try {
+            // Get our database connection
+            conn = DBHelper.getConnection();
+
+            String sql = "update person set first=?, last=?, email=?, phone=?, birthday=? where id = ?";
 
 
+            // If you had parameters, it would look something like
+            // String sql = "select id, first, last, phone from person where id = ?";
+
+            // Create an object with all the info about our SQL statement to run.
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, person.getFirstName());
+            stmt.setString(2, person.getLastName());
+            stmt.setString(3, person.getEmailAddress());
+            stmt.setString(4, person.getPhoneNumber());
+            stmt.setString(5, person.getBirthday());
+            stmt.setInt(6, person.getId());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException se) {
+            log.log(Level.SEVERE, "SQL Error", se);
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Error", e);
+        } finally {
+            // Ok, close our result set, statement, and connection
+            try {
+                if (rs != null) rs.close();
+            } catch (Exception e) {
+                log.log(Level.SEVERE, "Error", e);
+            }
+
+            try {
+                if (stmt != null) stmt.close();
+            } catch (Exception e) {
+                log.log(Level.SEVERE, "Error", e);
+            }
+
+            try {
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                log.log(Level.SEVERE, "Error", e);
+            }
+        }
+    }
 }
 

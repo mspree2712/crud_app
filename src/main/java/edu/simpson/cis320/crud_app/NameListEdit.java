@@ -100,6 +100,10 @@ public class NameListEdit extends HttpServlet {
             return;
         }
 
-        PersonDAO.addPerson(person);
+        if(person.getId() == 0) {
+            PersonDAO.addPerson(person);
+        } else{
+            PersonDAO.editPerson(person);
+        }
     }
 }

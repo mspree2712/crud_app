@@ -52,18 +52,51 @@ function updateTable() {
                 + '</td><td>'
                 + htmlSafe(birthdayString)
                 + '</td><td>'
+                + "<button type='button' name='edit' class='editButton btn btn-primary' value='" + json_result[i].id + "'>Edit</button>"
+                + " "
                 + '<button type=\'button\' name=\'delete\' class=\'deleteButton btn btn-danger\' value= \''+json_result[i].id +'\'>'
                 + 'Delete'
                 + '</button>'
                 + '</td></tr>'
                 );
         }
-        console.log("before");
         $(".deleteButton").on("click", deleteItem);
-        console.log("after");
+        $(".editButton").on("click", editItem);
     });
 }
 updateTable();
+
+function editItem(e) {
+    console.debug("Edit");
+    console.debug("Edit: " + e.target.value);
+
+    let id = e.target.value;
+    let first = e.target.parentNode.parentNode.querySelectorAll("td")[1].innerHTML;
+    let last = e.target.parentNode.parentNode.querySelectorAll("td")[2].innerHTML;
+    let email = e.target.parentNode.parentNode.querySelectorAll("td")[3].innerHTML;
+    let phone = e.target.parentNode.parentNode.querySelectorAll("td")[4].innerHTML;
+    let birthday = e.target.parentNode.parentNode.querySelectorAll("td")[5].innerHTML;
+
+    let regexp = /\((\d{3})\) (\d{3})-(\d{4})/;
+    let match = phone.match(regexp);
+    console.log("Matches:");
+    console.log(match);
+    let phoneString = match[1]+"-"+match[2]+"-"+match[3];
+
+    let timestamp = Date.parse(birthday);
+    let dateObject = new Date(timestamp);
+    let fullDateString = dateObject.toISOString();
+    let shortDateString = fullDateString.split('T')[0];
+
+    $('#id').val(id);
+    $('#firstName').val(first);
+    $('#lastName').val(last);
+    $('#email').val(email);
+    $('#phoneNumber').val(phoneString);
+    $('#birthday').val(shortDateString);
+
+    $('#myModal').modal('show');
+}
 
 function deleteItem(e) {
     console.log("Delete");
@@ -88,7 +121,7 @@ function showDialogAdd() {
     $('#id').val("");
     $('#firstName').val("");
     $('#lastName').val("");
-    $('#emailAddress').val("");
+    $('#email').val("");
     $('#phoneNumber').val("");
     $('#birthday').val("")
 
@@ -213,13 +246,13 @@ function saveChanges() {
                 phoneNumber: phoneNumber,
                 birthday: birthday};
         }
-        console.log("before post" + dataToServer);
+
         $.ajax({
             type: 'POST',
             url: url,
             data: JSON.stringify(dataToServer),
             success: function (dataFromServer) {
-                console.log("test" + dataFromServer);
+                console.log(dataFromServer);
                 updateTable();
                 $('#myModal').modal('hide');
             },
@@ -252,10 +285,10 @@ function clearValidation() {
 let closeButton = $('#closeButton');
 closeButton.on("click", clearValidation);
 
-$(document).keydown(function(e) {
+/*$(document).keydown(function(e) {
     console.log(e.keyCode);
     if(e.keyCode == 65 && !$('#myModal').is(':visible')){
         showDialogAdd();
     }
-})
+})*/
 
