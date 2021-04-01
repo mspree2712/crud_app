@@ -54,46 +54,51 @@ public class NameListEdit extends HttpServlet {
         Jsonb jsonb = JsonbBuilder.create();
         Person person = jsonb.fromJson(requestString, Person.class);
 
-        /*String firstName = request.getParameter("firstName");
+        String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String emailAddress = request.getParameter("emailAddress");
         String phoneNumber = request.getParameter("phoneNumber");
         String birthday = request.getParameter("birthday");
 
-        Matcher f = nameValidationPattern.matcher(firstName);
+        Matcher f = nameValidationPattern.matcher(person.getFirstName());
         if (f.find( )){
             out.println("success");
         } else {
             out.println("error");
+            return;
         }
 
-        Matcher l = nameValidationPattern.matcher(lastName);
+        Matcher l = nameValidationPattern.matcher(person.getLastName());
         if (l.find( )){
             out.println("success");
         } else {
             out.println("error");
+            return;
         }
 
-        Matcher e = emailValidationPattern.matcher(emailAddress);
+        Matcher e = emailValidationPattern.matcher(person.getEmailAddress());
         if (e.find( )){
             out.println("success");
         } else {
             out.println("error");
+            return;
         }
 
-        Matcher p = phoneNumberValidationPattern.matcher(phoneNumber);
+        Matcher p = phoneNumberValidationPattern.matcher(person.getPhoneNumber());
         if (p.find( )){
             out.println("success");
         } else {
             out.println("error");
+            return;
         }
 
-        Matcher b = nameValidationPattern.matcher(birthday);
+        Matcher b = birthdayValidationPattern.matcher(person.getBirthday());
         if (b.find( )){
             out.println("success");
         } else {
             out.println("error");
-        }*/
+            return;
+        }
 
         PersonDAO.addPerson(person);
     }

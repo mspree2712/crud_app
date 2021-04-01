@@ -195,19 +195,31 @@ function saveChanges() {
     }
 
     if (isValid) {
+        let dataToServer;
+        let id = $('#id').val();
         let url = "api/name_list_edit";
-        let dataToServer = {firstName: firstName,
-                            lastName: lastName,
-                            emailAddress: emailAddress,
-                            phoneNumber: phoneNumber,
-                            birthday: birthday};
-
+        if (id !== ""){
+            dataToServer = {id: id,
+            firstName: firstName,
+            lastName: lastName,
+            emailAddress: emailAddress,
+            phoneNumber: phoneNumber,
+            birthday: birthday};
+        } else {
+            dataToServer = {
+                firstName: firstName,
+                lastName: lastName,
+                emailAddress: emailAddress,
+                phoneNumber: phoneNumber,
+                birthday: birthday};
+        }
+        console.log("before post" + dataToServer);
         $.ajax({
             type: 'POST',
             url: url,
             data: JSON.stringify(dataToServer),
             success: function (dataFromServer) {
-                console.log(dataFromServer);
+                console.log("test" + dataFromServer);
                 updateTable();
                 $('#myModal').modal('hide');
             },
